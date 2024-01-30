@@ -77,38 +77,40 @@ namespace MagicVilla_API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
 
-        public async Task<ActionResult<VillaDto>> CrearVilla([FromBody] VillaCreateDto villaDto)
+        public async Task<ActionResult<VillaDto>> CrearVilla([FromBody] VillaCreateDto createDto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if(await _db.Villas.FirstOrDefaultAsync(v=>v.Nombre.ToLower() == villaDto.Nombre.ToLower()) != null)
+            if(await _db.Villas.FirstOrDefaultAsync(v=>v.Nombre.ToLower() == createDto.Nombre.ToLower()) != null)
             {
                 ModelState.AddModelError("NombreExiste", "La villa con ese nombre ya existe!");
                 return BadRequest(ModelState); 
             }
 
-            if (villaDto == null)
+            if (createDto == null)
             {
-                return BadRequest(villaDto);
+                return BadRequest(createDto);
             }
 
             ////villaDto.Id = VillaStore.villaList.OrderByDescending(v => v.Id).FirstOrDefault().Id + 1;
             ////VillaStore.villaList.Add(villaDto);
             //return Ok(villaDto);
 
-            Villa modelo = new() // En el post no se envía el id, ya que es autoincrementable
-            {
-                Nombre = villaDto.Nombre,
-                Detalle = villaDto.Detalle,
-                ImagenUrl = villaDto.ImagenUrl,
-                Ocupantes = villaDto.Ocupantes,
-                Tarifa = villaDto.Tarifa,
-                MetrosCuadrados = villaDto.MetrosCuadrados,
-                Amenidad = villaDto.Amenidad
-            };
+            ////Villa modelo = new() // En el post no se envía el id, ya que es autoincrementable
+            ////{
+            ////    Nombre = villaDto.Nombre,
+            ////    Detalle = villaDto.Detalle,
+            ////    ImagenUrl = villaDto.ImagenUrl,
+            ////    Ocupantes = villaDto.Ocupantes,
+            ////    Tarifa = villaDto.Tarifa,
+            ////    MetrosCuadrados = villaDto.MetrosCuadrados,
+            ////    Amenidad = villaDto.Amenidad
+            ////};
+            
+            Villa modelo = _mapper.Map<Villa>(createDto);
 
             await _db.Villas.AddAsync(modelo);
             await _db.SaveChangesAsync();
