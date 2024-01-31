@@ -149,9 +149,9 @@ namespace MagicVilla_API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
 
-        public async Task<IActionResult> UpdateVilla(int id, [FromBody] VillaUpdateDto villaDto)
+        public async Task<IActionResult> UpdateVilla(int id, [FromBody] VillaUpdateDto updateDto)
         {
-            if(villaDto == null || id!= villaDto.Id)
+            if(updateDto == null || id!= updateDto.Id)
             {
                 return BadRequest();
             }
@@ -160,18 +160,20 @@ namespace MagicVilla_API.Controllers
             ////villa.Nombre = villaDto.Nombre;
             ////villa.Ocupantes = villaDto.Ocupantes;
             ////villa.MetrosCuadrados = villaDto.MetrosCuadrados;
+            
+            Villa modelo = _mapper.Map<Villa>(updateDto);
 
-            Villa modelo = new() 
-            {
-                Id = villaDto.Id,
-                Nombre = villaDto.Nombre,
-                Detalle = villaDto.Detalle,
-                ImagenUrl = villaDto.ImagenUrl,
-                Ocupantes = villaDto.Ocupantes,
-                Tarifa = villaDto.Tarifa,
-                MetrosCuadrados = villaDto.MetrosCuadrados,
-                Amenidad = villaDto.Amenidad
-            };
+            ////Villa modelo = new() 
+            ////{
+            ////    Id = villaDto.Id,
+            ////    Nombre = villaDto.Nombre,
+            ////    Detalle = villaDto.Detalle,
+            ////    ImagenUrl = villaDto.ImagenUrl,
+            ////    Ocupantes = villaDto.Ocupantes,
+            ////    Tarifa = villaDto.Tarifa,
+            ////    MetrosCuadrados = villaDto.MetrosCuadrados,
+            ////    Amenidad = villaDto.Amenidad
+            ////};
 
             _db.Villas.Update(modelo);
             await _db.SaveChangesAsync();
@@ -196,17 +198,19 @@ namespace MagicVilla_API.Controllers
 
             var villa = await _db.Villas.AsNoTracking().FirstOrDefaultAsync(v => v.Id == id);
 
-            VillaUpdateDto villaDto = new()
-            {
-                Id = villa.Id,
-                Nombre = villa.Nombre,
-                Detalle = villa.Detalle,
-                ImagenUrl = villa.ImagenUrl,
-                Ocupantes = villa.Ocupantes,
-                Tarifa = villa.Tarifa,
-                MetrosCuadrados = villa.MetrosCuadrados,
-                Amenidad = villa.Amenidad
-            };
+            VillaUpdateDto villaDto = _mapper.Map<VillaUpdateDto>(villa);
+
+            ////VillaUpdateDto villaDto = new()
+            ////{
+            ////    Id = villa.Id,
+            ////    Nombre = villa.Nombre,
+            ////    Detalle = villa.Detalle,
+            ////    ImagenUrl = villa.ImagenUrl,
+            ////    Ocupantes = villa.Ocupantes,
+            ////    Tarifa = villa.Tarifa,
+            ////    MetrosCuadrados = villa.MetrosCuadrados,
+            ////    Amenidad = villa.Amenidad
+            ////};
 
             if(villa == null) return BadRequest();
 
@@ -217,17 +221,19 @@ namespace MagicVilla_API.Controllers
                 return BadRequest(ModelState);
             }
 
-            Villa modelo = new()
-            {
-                Id = villaDto.Id,
-                Nombre = villaDto.Nombre,
-                Detalle = villaDto.Detalle,
-                ImagenUrl = villaDto.ImagenUrl,
-                Ocupantes = villaDto.Ocupantes,
-                Tarifa = villaDto.Tarifa,
-                MetrosCuadrados = villaDto.MetrosCuadrados,
-                Amenidad = villaDto.Amenidad
-            };
+            Villa modelo = _mapper.Map<Villa>(villaDto);
+
+            ////Villa modelo = new()
+            ////{
+            ////    Id = villaDto.Id,
+            ////    Nombre = villaDto.Nombre,
+            ////    Detalle = villaDto.Detalle,
+            ////    ImagenUrl = villaDto.ImagenUrl,
+            ////    Ocupantes = villaDto.Ocupantes,
+            ////    Tarifa = villaDto.Tarifa,
+            ////    MetrosCuadrados = villaDto.MetrosCuadrados,
+            ////    Amenidad = villaDto.Amenidad
+            ////};
 
             _db.Villas.Update(modelo);
             await _db.SaveChangesAsync();
